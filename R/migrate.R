@@ -227,7 +227,7 @@ renv_migrate_packrat_library <- function(project) {
   if (!file.exists(libdir))
     return(TRUE)
 
-  sources <- renv_files_list(libdir, full.names = TRUE)
+  sources <- renv_files_list(libdir, all.files = TRUE, full.names = TRUE)
   if (empty(sources))
     return(TRUE)
 

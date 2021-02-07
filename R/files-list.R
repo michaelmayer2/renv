@@ -31,7 +31,6 @@ renv_files_list_impl <- function(path         = ".",
 {
   children <- renv_files_list_impl_one(
     path         = path,
-    pattern      = pattern,
     all.files    = all.files,
     recursive    = recursive,
     ignore.case  = ignore.case
@@ -39,6 +38,18 @@ renv_files_list_impl <- function(path         = ".",
 
   if (empty(children))
     return(character())
+
+  if (!is.null(pattern)) {
+
+    matched <- grep(
+      pattern = pattern,
+      x = basename(children),
+      ignore.case = ignore.case
+    )
+
+    children <- children[matched]
+
+  }
 
   if (recursive && !include.dirs) {
     paths <- paste(path, children, sep = "/")
@@ -56,21 +67,12 @@ renv_files_list_impl <- function(path         = ".",
 }
 
 renv_files_list_impl_one <- function(path        = ".",
-                                     pattern     = NULL,
                                      all.files   = FALSE,
                                      recursive   = FALSE,
                                      ignore.case = FALSE)
 {
   # get filenames of children in requested path
   children <- renv_files_list_impl_one_exec(path)
-
-  # keep only those matching the supplied pattern
-  if (!is.null(pattern)) children <- grep(
-    pattern     = pattern,
-    x           = children,
-    value       = TRUE,
-    ignore.case = ignore.case
-  )
 
   # always drop '.', '..'
   children <- setdiff(children, c(".", ".."))
@@ -97,7 +99,6 @@ renv_files_list_impl_one <- function(path        = ".",
       # get filenames in sub-folder path
       subfiles <- renv_files_list_impl_one(
         path        = paste(path, subdir, sep = "/"),
-        pattern     = pattern,
         all.files   = all.files,
         recursive   = recursive,
         ignore.case = ignore.case
