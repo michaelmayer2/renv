@@ -315,7 +315,11 @@ renv_dependencies_find_dir <- function(path, root, depth) {
 renv_dependencies_find_dir_children <- function(path, root, depth) {
 
   # list files in the folder
-  children <- renv_files_list(path, full.names = TRUE)
+  children <- renv_files_list(
+    path       = path,
+    all.files  = TRUE,
+    full.names = TRUE
+  )
 
   # remove files which are broken symlinks
   children <- children[file.exists(children)]
