@@ -66,7 +66,7 @@ renv_purge_impl <- function(package,
 
   # construct versioned path
   paths <- if (is.null(version))
-    list.files(paths, full.names = TRUE)
+    renv_files_list(paths, full.names = TRUE)
   else
     file.path(paths, version)
   if (all(!file.exists(paths)))
@@ -74,7 +74,7 @@ renv_purge_impl <- function(package,
 
   # construct hashed path
   paths <- if (is.null(hash))
-    list.files(paths, full.names = TRUE)
+    renv_files_list(paths, full.names = TRUE)
   else
     file.path(paths, hash)
   if (all(!file.exists(paths)))

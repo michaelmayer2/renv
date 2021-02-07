@@ -195,9 +195,9 @@ renv_migrate_packrat_sources <- function(project) {
     "$"                    # end
   )
 
-  suffixes <- list.files(
-    srcdir,
-    pattern = pattern,
+  suffixes <- renv_files_list(
+    path      = srcdir,
+    pattern   = pattern,
     recursive = TRUE
   )
 
@@ -227,7 +227,7 @@ renv_migrate_packrat_library <- function(project) {
   if (!file.exists(libdir))
     return(TRUE)
 
-  sources <- list.files(libdir, full.names = TRUE)
+  sources <- renv_files_list(libdir, full.names = TRUE)
   if (empty(sources))
     return(TRUE)
 
@@ -274,9 +274,9 @@ renv_migrate_packrat_cache <- function(project) {
   # find packages in the packrat cache
   packrat <- asNamespace("packrat")
   cache <- packrat$cacheLibDir()
-  packages <- list.files(cache, full.names = TRUE)
-  hashes <- list.files(packages, full.names = TRUE)
-  sources <- list.files(hashes, full.names = TRUE)
+  packages <- renv_files_list(cache, full.names = TRUE)
+  hashes <- renv_files_list(packages, full.names = TRUE)
+  sources <- renv_files_list(hashes, full.names = TRUE)
 
   # sanity check: make sure the source folder is an R package
   ok <- file.exists(file.path(sources, "DESCRIPTION"))

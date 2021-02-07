@@ -17,12 +17,12 @@ test_that("infrastructure can be removed", {
 
   renv_tests_scope("breakfast")
 
-  before <- list.files(recursive = TRUE)
+  before <- renv_files_list(recursive = TRUE)
   init()
   deactivate()
   renv_infrastructure_remove()
   unlink("renv.lock")
-  after <- list.files(recursive = TRUE)
+  after <- renv_files_list(recursive = TRUE)
 
   expect_setequal(before, after)
 

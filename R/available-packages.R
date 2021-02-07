@@ -461,7 +461,7 @@ renv_available_packages_local <- function(type, project = NULL) {
   )
 
   # find all files used in the locals folder
-  all <- list.files(
+  all <- renv_files_list(
     path         = roots,
     all.files    = TRUE,
     full.names   = TRUE,

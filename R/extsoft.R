@@ -56,7 +56,7 @@ renv_extsoft_install <- function(quiet = FALSE) {
     manifest <- renv_extsoft_manifest_path(file)
     ensure_parent_directory(manifest)
 
-    before <- list.files(extsoft, recursive = TRUE)
+    before <- renv_files_list(extsoft, recursive = TRUE)
 
     # unpack archive
     if (file == "glpk32.zip") {
@@ -84,7 +84,7 @@ renv_extsoft_install <- function(quiet = FALSE) {
 
     }
 
-    after <- list.files(extsoft, recursive = TRUE)
+    after <- renv_files_list(extsoft, recursive = TRUE)
     writeLines(setdiff(after, before), con = manifest)
 
   }

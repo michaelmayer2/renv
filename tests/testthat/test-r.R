@@ -25,10 +25,10 @@ test_that("we can use R CMD build to build a package", {
   files <- renv_archive_list(tarball)
   expect_true(all(c("DESCRIPTION", "NAMESPACE", "MD5") %in% basename(files)))
 
-  before <- list.files(testdir)
+  before <- renv_files_list(testdir)
   args <- c("CMD", "INSTALL", "--build", package)
   output <- r_exec(args, stdout = TRUE, stderr = TRUE)
-  after <- list.files(testdir)
+  after <- renv_files_list(testdir)
   binball <- renv_vector_diff(after, before)
 
   expect_true(length(binball) == 1)

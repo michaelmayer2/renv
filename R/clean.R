@@ -58,7 +58,7 @@ renv_clean_library_tempdirs <- function(project, prompt) {
   }
 
   library <- renv_paths_library(project = project)
-  children <- list.files(library, full.names = TRUE)
+  children <- renv_files_list(library, full.names = TRUE)
 
   bad <- grep("/file\\w{12}$", children, value = TRUE)
   if (empty(bad))
@@ -103,7 +103,7 @@ renv_clean_system_library <- function(project, prompt) {
 
   # nocov start
   if (renv_platform_windows()) {
-    folders <- list.files(syslib, full.names = TRUE)
+    folders <- renv_files_list(syslib, full.names = TRUE)
     descpaths <- file.path(folders, "DESCRIPTION")
     missing <- !file.exists(descpaths)
     packages <- union(packages, basename(folders)[missing])
@@ -147,7 +147,7 @@ renv_clean_unused_packages <- function(project, prompt) {
 
   # find packages installed in the project library
   library <- renv_paths_library(project = project)
-  installed <- list.files(library)
+  installed <- renv_files_list(library)
   if (empty(installed))
     return(ntd())
 
@@ -193,7 +193,7 @@ renv_clean_stale_lockfiles <- function(project, prompt) {
 
   # find 00LOCK directories in library
   library <- renv_paths_library(project = project)
-  lock <- list.files(path = library, pattern = "^00LOCK", full.names = TRUE)
+  lock <- renv_files_list(path = library, pattern = "^00LOCK", full.names = TRUE)
   if (empty(lock))
     return(ntd())
 
@@ -260,7 +260,7 @@ renv_clean_cache <- function(project, prompt) {
 
   action <- function(project) {
     library <- renv_paths_library(project = project)
-    packages <- list.files(library, full.names = TRUE)
+    packages <- renv_files_list(library, full.names = TRUE)
     descs <- file.path(packages, "DESCRIPTION")
     existing <- file.exists(descs)
     map_chr(descs[existing], renv_cache_path, USE.NAMES = FALSE)

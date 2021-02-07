@@ -15,6 +15,10 @@ test_that("issues within the cache are reported", {
   renv_tests_scope("breakfast")
   renv::init()
 
+  # should be no issues in the cache
+  problems <- renv_cache_diagnose(verbose = FALSE)
+  expect_true(is.null(problems) || nrow(problems) == 0)
+
   # find packages in the cache
   cache <- renv_cache_list()
 
@@ -43,19 +47,19 @@ test_that("use.cache project setting is honored", {
 
   renv::init()
 
-  packages <- list.files(renv_paths_library(), full.names = TRUE)
+  packages <- renv_files_list(renv_paths_library(), full.names = TRUE)
   types <- renv_file_type(packages)
   expect_true(all(types == "symlink"))
 
   renv::settings$use.cache(FALSE)
 
-  packages <- list.files(renv_paths_library(), full.names = TRUE)
+  packages <- renv_files_list(renv_paths_library(), full.names = TRUE)
   types <- renv_file_type(packages)
   expect_true(all(types == "directory"))
 
   renv::settings$use.cache(TRUE)
 
-  packages <- list.files(renv_paths_library(), full.names = TRUE)
+  packages <- renv_files_list(renv_paths_library(), full.names = TRUE)
   types <- renv_file_type(packages)
   expect_true(all(types == "symlink"))
 
@@ -109,7 +113,7 @@ test_that("malformed folders in the cache are ignored", {
   dir.create(dirname(badpath), recursive = TRUE)
   file.create(badpath)
 
-  paths <- list.files(renv_paths_cache(), recursive = TRUE)
+  paths <- renv_files_list(renv_paths_cache(), recursive = TRUE)
   expect_length(paths, 1)
 
   paths <- renv_cache_list()

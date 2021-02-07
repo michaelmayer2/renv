@@ -32,8 +32,8 @@ renv_cache_find <- function(record) {
   # if the record doesn't have a hash, check to see if we can still locate a
   # compatible package version within the cache
   root <- with(record, renv_paths_cache(Package, Version))
-  hashes <- list.files(root, full.names = TRUE)
-  packages <- list.files(hashes, full.names = TRUE)
+  hashes <- renv_files_list(root, full.names = TRUE)
+  packages <- renv_files_list(hashes, full.names = TRUE)
 
   # iterate over package paths, read DESCRIPTION, and look
   # for something compatible with the requested record
@@ -158,7 +158,7 @@ renv_cache_synchronize <- function(record, linkable = FALSE) {
   renv_file_copy(path, cache)
   after <- Sys.time()
 
-  files <- list.files(cache, recursive = TRUE)
+  files <- renv_files_list(cache, recursive = TRUE)
   time <- difftime(after, before, units = "auto")
 
   fmt <- "\tOK [copied %s files in %s]"
@@ -178,10 +178,11 @@ renv_cache_list <- function(cache = NULL, packages = NULL) {
   #    <package>/<version>/<hash>/<package>
   #
   # so find entries in the cache by listing files in each directory
-  names <- file.path(cache, packages %||% list.files(cache))
-  versions <- list.files(names, full.names = TRUE)
-  hashes <- list.files(versions, full.names = TRUE)
-  paths <- list.files(hashes, full.names = TRUE)
+  packages <- packages %||% renv_files_list(cache)
+  names <- file.path(cache, packages)
+  versions <- renv_files_list(names, full.names = TRUE)
+  hashes <- renv_files_list(versions, full.names = TRUE)
+  paths <- renv_files_list(hashes, full.names = TRUE)
 
   # only keep paths that appear to be valid
   valid <- grep(renv_regexps_package_name(), basename(paths))

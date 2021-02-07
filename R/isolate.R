@@ -51,7 +51,7 @@ isolate <- function(project = NULL) {
 renv_isolate_unix <- function(project) {
 
   library <- renv_paths_library(project = project)
-  targets <- list.files(library, full.names = TRUE)
+  targets <- renv_files_list(library, full.names = TRUE)
 
   sources <- Sys.readlink(targets)
   islink <- !is.na(sources) & nzchar(sources)
@@ -76,7 +76,7 @@ renv_isolate_unix <- function(project) {
 renv_isolate_windows <- function(project) {
 
   library <- renv_paths_library(project = project)
-  targets <- list.files(library, full.names = TRUE)
+  targets <- renv_files_list(library, full.names = TRUE)
 
   sources <- map_chr(targets, renv_cache_path)
   names(targets) <- sources

@@ -7,8 +7,8 @@ renv_local_packages_database <- function(project) {
   )
 
   # list files both at top-level + one nested level
-  paths <- list.files(roots, full.names = TRUE)
-  paths <- c(paths, list.files(paths, full.names = TRUE))
+  paths <- renv_files_list(roots, full.names = TRUE)
+  paths <- c(paths, renv_files_list(paths, full.names = TRUE))
 
   # grab files that look like packages
   extpat <- "(?:\\.tar\\.gz|\\.tgz|\\.zip)$"

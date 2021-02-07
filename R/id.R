@@ -139,7 +139,7 @@ renv_id_generate_csc <- function() {
       c("Framework", "Framework64")
     )
 
-    versions <- list.files(frameworks, full.names = TRUE)
+    versions <- renv_files_list(frameworks, full.names = TRUE)
     candidates <- file.path(versions, "csc.exe")
     candidates[file.exists(candidates)]
 

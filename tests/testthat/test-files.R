@@ -13,9 +13,9 @@ test_that("directories can be copied", {
   for (i in range)
     file.create(file.path(source, sprintf("%02i.txt", i)))
 
-  expect_setequal(files, list.files(source))
+  expect_setequal(files, renv_files_list(source))
   renv_file_copy(source, target)
-  expect_setequal(list.files(source), list.files(target))
+  expect_setequal(renv_files_list(source), renv_files_list(target))
 
 })
 
@@ -34,7 +34,7 @@ test_that("directories can be moved", {
   renv_file_move(source, target)
   expect_true(!file.exists(source))
   expect_true(file.exists(target))
-  expect_setequal(files, list.files(target))
+  expect_setequal(files, renv_files_list(target))
 
 })
 
@@ -74,9 +74,9 @@ test_that("scoped backups are cleared as necessary", {
 
   expect_true(file.exists(target))
   expect_equal(readLines(target), "mutate")
-  list.files(tempdir())
+  renv_files_list(tempdir())
 
-  files <- list.files(tempdir())
+  files <- renv_files_list(tempdir())
   backup <- grep("^\\.renv-backup-", files)
   expect_length(backup, 0)
 
@@ -143,8 +143,8 @@ test_that("permissions, timestamps are preserved", {
 
   renv_file_copy(source, target)
 
-  srcfiles <- list.files(source, full.names = TRUE)
-  tgtfiles <- list.files(target, full.names = TRUE)
+  srcfiles <- renv_files_list(source, full.names = TRUE)
+  tgtfiles <- renv_files_list(target, full.names = TRUE)
 
   srcinfo <- file.info(srcfiles)
   tgtinfo <- file.info(tgtfiles)
@@ -166,7 +166,7 @@ test_that("renv can list files not representable in the native encoding", {
   file.create(evil)
   on.exit(unlink(evil), add = TRUE)
 
-  files <- renv_file_list(getwd(), full.names = FALSE)
+  files <- renv_files_list(getwd(), full.names = FALSE)
   expect_true(evil %in% files)
 
 })

@@ -16,12 +16,12 @@ test_that("we can restore packages after init", {
   renv::init()
 
   libpath <- renv_paths_library()
-  before <- list.files(libpath)
+  before <- renv_files_list(libpath)
 
   unlink(renv_paths_library(), recursive = TRUE)
   renv::restore()
 
-  after <- list.files(libpath)
+  after <- renv_files_list(libpath)
   expect_setequal(before, after)
 
 })
@@ -96,7 +96,7 @@ test_that("install.staged works as expected", {
 
     unlink(renv_paths_library(), recursive = TRUE)
     expect_error(renv::restore())
-    files <- list.files(library)
+    files <- renv_files_list(library)
     expect_true(length(files) == 0L)
 
   })
@@ -113,7 +113,7 @@ test_that("install.staged works as expected", {
 
     unlink(renv_paths_library(), recursive = TRUE)
     expect_error(renv::restore())
-    files <- list.files(library)
+    files <- renv_files_list(library)
     expect_true(length(files) != 0L)
 
   })
@@ -142,7 +142,7 @@ test_that("renv::restore(packages = <...>) works", {
   renv::init()
   unlink(paths$library(), recursive = TRUE)
   renv::restore(packages = "toast")
-  expect_length(list.files(paths$library()), 2L)
+  expect_length(renv_files_list(paths$library()), 2L)
   expect_true(renv_package_installed("bread"))
   expect_true(renv_package_installed("toast"))
 })

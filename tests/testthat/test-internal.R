@@ -8,7 +8,7 @@ test_that("R files have balanced covr exclusions", {
 
   errors <- stack()
 
-  files <- list.files("R", pattern = "[.][rR]$", full.names = TRUE)
+  files <- renv_files_list("R", pattern = "[.][rR]$", full.names = TRUE)
   lapply(files, function(file) {
 
     nocov <- FALSE

@@ -1,5 +1,7 @@
 
-renv_tests_scope <- function(packages = character()) {
+renv_tests_scope <- function(packages = character(),
+                             dir = NULL)
+{
 
   renv_tests_init()
 
@@ -10,7 +12,7 @@ renv_tests_scope <- function(packages = character()) {
   Sys.setenv(RENV_PATHS_LOCAL = file.path(renv_tests_root(), "local"))
 
   # move to own test directory
-  dir <- tempfile("renv-test-")
+  dir <- dir %||% tempfile("renv-test-")
   ensure_directory(dir)
   dir <- renv_path_normalize(dir, winslash = "/")
   owd <- setwd(dir)
@@ -148,7 +150,7 @@ renv_tests_init_repos <- function(repopath = NULL) {
   renv_scope_options(renv.config.filebacked.cache = FALSE)
 
   # copy in packages
-  paths <- list.files(getwd(), full.names = TRUE)
+  paths <- renv_files_list(getwd(), full.names = TRUE)
   subdirs <- file.path(getRversion(), "Recommended")
   for (path in paths) {
 

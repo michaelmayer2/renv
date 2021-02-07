@@ -216,7 +216,7 @@ renv_project_synchronized_check <- function(project = NULL, lockfile = NULL) {
   # but there are multiple packages referenced in the lockfile,
   # then instruct the user that they may need to run restore
   libpath <- renv_paths_library(project = project)
-  packages <- list.files(libpath)
+  packages <- renv_files_list(libpath)
 
   needsrestore <-
     empty(setdiff(packages, "renv")) &&

@@ -8,9 +8,9 @@ renv_methods_map <- function() {
       win32 = "renv_path_normalize_win32"
     ),
 
-    renv_file_list_impl = c(
-      unix  = "renv_file_list_impl_unix",
-      win32 = "renv_file_list_impl_win32"
+    renv_files_list_impl_one_exec = c(
+      unix  = "renv_files_list_impl_one_exec_unix",
+      win32 = "renv_files_list_impl_one_exec_win32"
     )
 
   )

@@ -3,7 +3,7 @@
 # to the cache or similar)
 renv_library_diagnose <- function(project, libpath) {
 
-  children <- list.files(libpath, full.names = TRUE)
+  children <- renv_files_list(libpath, full.names = TRUE)
   if (empty(children))
     return(TRUE)
 

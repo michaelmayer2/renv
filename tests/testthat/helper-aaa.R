@@ -17,7 +17,7 @@ test_that <- function(desc, code) {
   oldrepos <- getOption("repos")
 
   repopath <- getOption("renv.tests.repopath")
-  oldfiles <- list.files(
+  oldfiles <- renv_files_list(
     path = repopath,
     all.files = TRUE,
     full.names = TRUE,
@@ -47,7 +47,7 @@ test_that <- function(desc, code) {
     stopf("test %s has corrupted repos", shQuote(desc))
   }
 
-  newfiles <- list.files(
+  newfiles <- renv_files_list(
     path = repopath,
     all.files = TRUE,
     full.names = TRUE,

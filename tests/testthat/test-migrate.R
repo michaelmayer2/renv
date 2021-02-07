@@ -43,7 +43,7 @@ test_that("a sample Packrat project can be migrated", {
 
   # check the renv sources directory
   cransources <- renv_paths_source("cran")
-  expect_setequal(expected, list.files(cransources))
+  expect_setequal(expected, renv_files_list(cransources))
 
   # check the lockfile
   lockfile <- renv_lockfile_read("renv.lock")

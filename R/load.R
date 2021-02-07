@@ -149,7 +149,7 @@ renv_load_path <- function(project) {
 
     files <- c(
       "/etc/paths",
-      list.files("/etc/paths.d", full.names = TRUE)
+      renv_files_list("/etc/paths.d", full.names = TRUE)
     )
 
     PATH <- unique(uapply(files, readLines, warn = FALSE))

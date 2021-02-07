@@ -28,24 +28,24 @@ test_that("we can successfully compress / decompress some sample files", {
   tarfile <- tempfile(fileext = ".tar.gz")
   tar(tarfile, files = ".")
 
-  actual <- list.files(dir)
+  actual <- renv_files_list(dir)
   expected <- basename(renv_archive_list(tarfile))
   expect_setequal(actual, expected)
 
   exdir <- tempfile()
   renv_archive_decompress(tarfile, exdir = exdir)
-  expect_setequal(list.files(exdir), list.files(dir))
+  expect_setequal(renv_files_list(exdir), renv_files_list(dir))
 
 
   zipfile <- tempfile(fileext = ".zip")
   zip(zipfile, files = ".", extras = "-q")
 
-  actual <- list.files(dir)
+  actual <- renv_files_list(dir)
   expected <- basename(renv_archive_list(zipfile))
   expect_setequal(actual, expected)
 
   exdir <- tempfile()
   renv_archive_decompress(zipfile, exdir = exdir)
-  expect_setequal(list.files(exdir), list.files(dir))
+  expect_setequal(renv_files_list(exdir), renv_files_list(dir))
 
 })

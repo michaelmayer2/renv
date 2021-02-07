@@ -75,7 +75,7 @@ test_that("renv::init(bare = TRUE) initializes a project without packages", {
 
   renv_tests_scope("brunch")
   renv::init(bare = TRUE)
-  files <- list.files(renv_paths_library())
+  files <- renv_files_list(renv_paths_library())
   expect_length(files, 0)
 
 })

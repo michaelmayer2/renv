@@ -9,10 +9,10 @@ renv_rtools_list <- function() {
 
     Sys.getenv("RTOOLS40_HOME", unset = file.path(drive, "rtools40")),
     file.path(drive, "Rtools"),
-    list.files(file.path(drive, "RBuildTools"), full.names = TRUE),
+    renv_files_list(file.path(drive, "RBuildTools"), full.names = TRUE),
 
     "~/Rtools",
-    list.files("~/RBuildTools", full.names = TRUE)
+    renv_files_list("~/RBuildTools", full.names = TRUE)
 
   )
 

@@ -196,7 +196,7 @@ renv_install_staged <- function(records) {
 
   # migrate packages into true library
   library <- nth(libpaths, 1L)
-  sources <- list.files(templib, full.names = TRUE)
+  sources <- renv_files_list(templib, full.names = TRUE)
   targets <- file.path(library, basename(sources))
   names(targets) <- sources
   enumerate(targets, renv_file_move, overwrite = TRUE)
@@ -411,7 +411,7 @@ renv_install_package_local <- function(record, quiet = TRUE) {
     renv_archive_decompress(path, exdir = dir)
 
     # rename to true package name
-    name <- list.files(dir)
+    name <- renv_files_list(dir)
     renv_file_move(file.path(dir, name), file.path(dir, package))
 
     # form new path
