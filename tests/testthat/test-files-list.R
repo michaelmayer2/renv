@@ -8,20 +8,34 @@ test_that("we can list files in paths with UTF-8 characters", {
   renv_tests_scope(dir = root)
 
   # create some files
-  paths <- list(
-    "dir1/file1.R"        = "library(bread)",
-    "dir2/file2.R"        = "library(oatmeal)",
-    "\u{9b3c}/\u{9b3c}.R" = "library(toast)"
+  entries <- list(
+
+    list(
+      path = "dir1/file1.R",
+      contents = "library(bread)"
+    ),
+
+    list(
+      path = "dir2/file2.R",
+      contents = "library(oatmeal)"
+    ),
+
+    list(
+      path = "\u{9b3c}/\u{9b3c}.R",
+      contents = "library(toast)"
+    )
+
   )
 
-  enumerate(paths, function(path, contents) {
-    ensure_parent_directory(path)
-    writeLines(contents, con = path)
+  map(entries, function(entry) {
+    ensure_parent_directory(entry$path)
+    writeLines(entry$contents, con = entry$path)
   })
 
   # try listing some files
-  listed <- renv_files_list(recursive = TRUE)
-  expect_setequal(names(paths), setdiff(listed, "dependencies.R"))
+  actual <- renv_files_list(recursive = TRUE)
+  expected <- map_chr(entries, `[[`, "path")
+  expect_setequal(setdiff(actual, "dependencies.R"), expected)
 
   # exercise renv a bit
   init()

@@ -1,5 +1,5 @@
 
-renv_files_list <- function(path         = ".",
+renv_files_list <- function(path         = getwd(),
                             pattern      = NULL,
                             all.files    = FALSE,
                             full.names   = FALSE,
@@ -21,7 +21,7 @@ renv_files_list <- function(path         = ".",
   unlist(children, recursive = TRUE, use.names = FALSE)
 }
 
-renv_files_list_impl <- function(path         = ".",
+renv_files_list_impl <- function(path         = getwd(),
                                  pattern      = NULL,
                                  all.files    = FALSE,
                                  full.names   = FALSE,
@@ -66,7 +66,7 @@ renv_files_list_impl <- function(path         = ".",
 
 }
 
-renv_files_list_impl_one <- function(path        = ".",
+renv_files_list_impl_one <- function(path        = getwd(),
                                      all.files   = FALSE,
                                      recursive   = FALSE,
                                      ignore.case = FALSE)
