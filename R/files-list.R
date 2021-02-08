@@ -7,6 +7,14 @@ renv_files_list <- function(path         = getwd(),
                             ignore.case  = FALSE,
                             include.dirs = FALSE)
 {
+  # normalizePath('.') may fail on Windows, so fix up such paths now
+  path <- if (identical(path, "."))
+    getwd()
+  else if (substring(path, 1L, 2L) %in% c("./", ".\\"))
+    paste(getwd(), substring(path, 3L), sep = "/")
+  else
+    path
+
   children <- map(
     path,
     renv_files_list_impl,
