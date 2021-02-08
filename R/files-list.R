@@ -7,6 +7,9 @@ renv_files_list <- function(path         = getwd(),
                             ignore.case  = FALSE,
                             include.dirs = FALSE)
 {
+  if (empty(path))
+    return(character())
+
   # normalizePath('.') may fail on Windows, so fix up such paths now
   path <- if (identical(path, "."))
     getwd()
@@ -183,6 +186,8 @@ renv_files_list_impl_one_exec_win32 <- function(path) {
 
   # join into single raw vector
   encoded <- unlist(output$data(), recursive = FALSE, use.names = FALSE)
+  if (is.null(encoded))
+    return(character())
 
   # convert raw data (encoded as UTF-16LE) to UTF-8
   converted <- iconv(list(encoded), from = "UTF-16LE", to = "UTF-8")

@@ -62,7 +62,7 @@ ewritef <- function(fmt = "", ..., con = stderr()) {
 
 vwritef <- function(fmt = "", ..., con = stdout()) {
   if (!is.null(fmt) && renv_verbose())
-    writeLines(sprintf(fmt, ...), con = con)
+    writeLines(sprintf(fmt, ...), con = con, useBytes = TRUE)
 }
 
 vewritef <- function(fmt = "", ..., con = stderr()) {

@@ -72,7 +72,7 @@ aliased_path <- function(path) {
   path <- gsub("\\", "/", path, fixed = TRUE)
 
   match <- regexpr(home, path, fixed = TRUE, useBytes = TRUE)
-  path[match == 1] <- file.path("~", substring(path[match == 1], nchar(home) + 2L))
+  path[match == 1] <- paste("~", substring(path[match == 1], nchar(home) + 2L), sep = "/")
 
   path
 
@@ -407,4 +407,50 @@ memoize <- function(key, expr, envir) {
 
 nth <- function(x, i) {
   x[[i]]
+}
+
+tempfile <- function(pattern = "file", tmpdir = tempdir(), fileext = "") {
+  random <- sample(c(letters, 0:9), size = 12L)
+  string <- paste(random, collapse = "")
+  paste(tmpdir, "/", pattern, string, fileext, sep = "")
+}
+
+find.package <- function(package,
+                         lib.loc = NULL,
+                         quiet = FALSE,
+                         verbose = getOption("verbose"))
+{
+  if (length(package) > 1) {
+
+    paths <- map(
+      package,
+      find.package,
+      lib.loc = lib.loc,
+      quiet = quiet,
+      verbose = verbose
+    )
+
+    return(unlist(paths))
+
+  }
+
+  # first, check loaded namespaces
+  if (is.null(lib.loc) && package %in% loadedNamespaces())
+    return(getNamespaceInfo(package, "path"))
+
+  # otherwise, find package in requested library paths
+  libpaths <- lib.loc %||% renv_libpaths_all()
+  for (libpath in libpaths) {
+    pkgpath <- paste(libpath, package, sep = "/")
+    descpath <- paste(pkgpath, "DESCRIPTION", sep = "/")
+    if (file.exists(descpath))
+      return(pkgpath)
+  }
+
+  # if we were told to be quiet, then just return character()
+  if (quiet)
+    return(character())
+
+  # otherwise, err
+  stop("there is no package called '", package, "'")
 }

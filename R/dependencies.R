@@ -1,5 +1,5 @@
 
-`_renv_dependencies` <- new.env(parent = emptyenv())
+.renv_dependencies <- list()
 
 #' Find R Package Dependencies in a Project
 #'
@@ -156,9 +156,11 @@ renv_dependencies_impl <- function(
 
   # check and see if we've pre-computed dependencies for this path, and
   # retrieve those pre-computed dependencies if so
-  if (length(path) == 1)
-    if (exists(path, envir = `_renv_dependencies`))
-      return(get(path, envir = `_renv_dependencies`))
+  if (length(path) == 1) {
+    cached <- .renv_dependencies[[path]]
+    if (!is.null(cached))
+      return(cached)
+  }
 
   renv_dependencies_begin(root = root)
   on.exit(renv_dependencies_end(), add = TRUE)
@@ -1248,8 +1250,9 @@ renv_dependencies_report <- function(errors) {
 renv_dependencies_scope <- function(path, action, .envir = NULL) {
 
   path <- renv_path_normalize(path, winslash = "/", mustWork = TRUE)
-  if (exists(path, envir = `_renv_dependencies`))
-    return(get(path, envir = `_renv_dependencies`))
+  cached <- .renv_dependencies[[path]]
+  if (!is.null(cached))
+    return(cached)
 
   errors <- config$dependency.errors()
   message <- paste(action, "aborted")
@@ -1259,10 +1262,10 @@ renv_dependencies_scope <- function(path, action, .envir = NULL) {
     renv.dependencies.error = renv_dependencies_error_handler(message, errors)
   )
 
-  assign(path, deps, envir = `_renv_dependencies`)
+  .renv_dependencies[[path]] <<- deps
 
   envir <- .envir %||% parent.frame()
-  defer(rm(list = path, envir = `_renv_dependencies`), envir = envir)
+  defer(.renv_dependencies[[path]] <<- NULL, envir = envir)
 
 }
 

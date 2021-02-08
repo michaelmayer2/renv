@@ -452,6 +452,15 @@ renv_available_packages_latest_select <- function(src, bin) {
 
 renv_available_packages_local <- function(type, project = NULL) {
 
+  tryCatch(
+    renv_available_packages_local_impl(type, project),
+    error = function(e) NULL
+  )
+
+}
+
+renv_available_packages_local_impl <- function(type, project) {
+
   project <- renv_project_resolve(project)
 
   # list files recursively in the local sources paths

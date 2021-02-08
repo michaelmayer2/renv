@@ -37,6 +37,12 @@ test_that("we can list files in paths with UTF-8 characters", {
   expected <- map_chr(entries, `[[`, "path")
   expect_setequal(setdiff(actual, "dependencies.R"), expected)
 
+  # force the use of staging library in 'safe' directory
+  staging <- paste(tempdir(), "staging", sep = "/")
+  ensure_directory(staging)
+  Sys.setenv(RENV_PATHS_LIBRARY_STAGING = staging)
+  renv_scope_options(renv.config.install.transactional = TRUE)
+
   # exercise renv a bit
   init()
 

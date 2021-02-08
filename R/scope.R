@@ -1,4 +1,10 @@
 
+renv_scope_dir <- function(dir, .envir = NULL) {
+  owd <- setwd(dir)
+  .envir <- .envir %||% parent.frame()
+  defer(setwd(owd), envir = .envir)
+}
+
 renv_scope_tempdir <- function(pattern = "renv-tempdir-", .envir = NULL) {
 
   dir <- tempfile(pattern)

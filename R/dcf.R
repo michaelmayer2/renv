@@ -14,8 +14,17 @@ renv_dcf_read <- function(file, ...) {
   ctype <- Sys.getlocale("LC_CTYPE")
   on.exit(Sys.setlocale("LC_CTYPE", ctype), add = TRUE)
 
+  # read.dcf will fail if the path cannot be converted to the native
+  # encoding, so work around this by working in the parent directory
+  # temporarily
+  renv_scope_dir(dirname(file))
+
   # read the file
-  dcf <- as.data.frame(read.dcf(file, ...), stringsAsFactors = FALSE)
+  dcf <- as.data.frame(
+    read.dcf(basename(file), ...),
+    stringsAsFactors = FALSE
+  )
+
   lapply(dcf, trimws)
 
 }
