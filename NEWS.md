@@ -1,6 +1,14 @@
 
 # renv 0.13.0 (UNRELEASED)
 
+* `renv` now prepends an OS-specific component to the library and cache paths
+  by default, effectively selecting a default value for the `RENV_PATHS_PREFIX`
+  environment variable when it is unset. This should help ensure that the same
+  cache root directory can be more easily shared across different machines and
+  operating systems, especially on Linux. If you'd like to preserve the paths
+  as used with `renv (< 0.13.0)`, please set `RENV_PATHS_PREFIX_EMPTY = TRUE`
+  (e.g. in your R installation's `Renviron.site`, or a user-local `~/.Renviron`)
+
 * `renv` gains a new configuration option, `install.shortcuts`. When enabled,
   if `renv` discovers that a package to be installed is already available in
   the user or site libraries, `renv` will instead install a copy of that package

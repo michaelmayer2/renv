@@ -97,6 +97,9 @@ renv_paths_mran <- function(...) {
   renv_paths_common("mran", c(), ...)
 }
 
+renv_paths_prefix <- function() {
+  renv_bootstrap_paths_prefix()
+}
 
 
 renv_paths_root <- function(...) {
@@ -165,7 +168,7 @@ renv_paths_init <- function() {
   envvars <- Sys.getenv()
 
   keys <- grep("^RENV_PATHS_", names(envvars), value = TRUE)
-  keys <- setdiff(keys, "RENV_PATHS_PREFIX")
+  keys <- setdiff(keys, c("RENV_PATHS_PREFIX", "RENV_PATHS_PREFIX_EMPTY"))
 
   if (empty(keys))
     return(character())
@@ -246,6 +249,10 @@ renv_paths_init <- function() {
 #' variable is set in your \R installation's `Renviron.site` file, typically
 #' located at `file.path(R.home("etc"), "Renviron.site")`, so that it can be
 #' active for any \R sessions launched on that machine.
+#'
+#' Starting with `renv 0.13.0`, the `RENV_PATHS_PREFIX` environment variable
+#' is set to a 'sane' default value. If you prefer to omit the OS-specific
+#' prefix, you can set the `RENV_PATHS_PREFIX_EMPTY` environment variable.
 #'
 #' If reproducibility of a project is desired on a particular machine, it is
 #' highly recommended that the `renv` cache of installed packages + binary

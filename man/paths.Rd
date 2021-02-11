@@ -73,6 +73,10 @@ variable is set in your \R installation's \code{Renviron.site} file, typically
 located at \code{file.path(R.home("etc"), "Renviron.site")}, so that it can be
 active for any \R sessions launched on that machine.
 
+Starting with \verb{renv 0.13.0}, the \code{RENV_PATHS_PREFIX} environment variable
+is set to a 'sane' default value. If you prefer to omit the OS-specific
+prefix, you can set the \code{RENV_PATHS_PREFIX_EMPTY} environment variable.
+
 If reproducibility of a project is desired on a particular machine, it is
 highly recommended that the \code{renv} cache of installed packages + binary
 packages is backed up and persisted, so that packages can be easily restored

@@ -289,13 +289,67 @@ renv_bootstrap_prefix <- function() {
   components <- c(prefix, R.version$platform)
 
   # include prefix if provided by user
-  prefix <- Sys.getenv("RENV_PATHS_PREFIX")
-  if (nzchar(prefix))
+  prefix <- renv_bootstrap_paths_prefix()
+  if (!is.null(prefix) && nzchar(prefix))
     components <- c(prefix, components)
 
   # build prefix
   paste(components, collapse = "/")
 
+}
+
+renv_bootstrap_paths_prefix <- function() {
+
+  # check request for empty prefix
+  empty <- Sys.getenv("RENV_PATHS_PREFIX_EMPTY", unset = NA)
+  if (empty %in% c("true", "True", "TRUE", "1"))
+    return(NULL)
+
+  # check for user-supplied prefix
+  prefix <- Sys.getenv("RENV_PATHS_PREFIX", unset = NA)
+  if (!is.na(prefix))
+    return(prefix)
+
+  # otherwise, compute a default prefix
+  sysinfo <- as.list(Sys.info())
+  sysname <- info[["sysname"]]
+
+  if (sysname == "Windows")
+    renv_bootstrap_paths_prefix_windows(sysinfo)
+  else if (sysname == "Darwin")
+    renv_bootstrap_paths_prefix_macos(sysinfo)
+  else if (sysname == "Linux")
+    renv_bootstrap_paths_prefix_linux(sysinfo)
+  else
+    renv_bootstrap_paths_prefix_unix(sysinfo)
+
+}
+
+renv_bootstrap_paths_prefix_windows <- function(sysinfo) {
+  "windows"
+}
+
+renv_bootstrap_paths_prefix_macos <- function(sysinfo) {
+  "macos"
+}
+
+renv_bootstrap_paths_prefix_linux <- function(sysinfo) {
+
+  # assume unknown id
+  id <- "unknown"
+
+  # try reading /etc/os-release
+  if (file.exists("/etc/os-release")) tryCatch({
+    vars <- read.table("/etc/os-release", sep = "=")
+    id <- vars$V2[vars$V1 == "ID"]
+  }, error = identity)
+
+  paste("linux", id, sep = "-")
+
+}
+
+renv_bootstrap_paths_prefix_unix <- function(sysinfo) {
+  paste("unix", tolower(sysinfo$sysname), sep = "-")
 }
 
 renv_bootstrap_library_root_name <- function(project) {
