@@ -24,9 +24,9 @@ renv_zzz_run <- function() {
 
   # only run when devtools::document() is called
   ok <- FALSE
-  document <- parse(text = "devtools::document")[[1]]
+  document <- quote(devtools::document)
   for (call in sys.calls()) {
-    if (identical(call[[1]], document)) {
+    if (identical(call[[1L]], document)) {
       ok <- TRUE
       break
     }

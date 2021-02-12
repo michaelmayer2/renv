@@ -270,11 +270,11 @@ renv_bootstrap_install <- function(version, tarball, library) {
 
 }
 
-renv_bootstrap_prefix <- function() {
+renv_bootstrap_prefix <- function(prefix = getOption("renv.paths.prefix")) {
 
   # construct version prefix
   version <- paste(R.version$major, R.version$minor, sep = ".")
-  prefix <- paste("R", numeric_version(version)[1, 1:2], sep = "-")
+  component <- paste("R", numeric_version(version)[1, 1:2], sep = "-")
 
   # include SVN revision for development versions of R
   # (to avoid sharing platform-specific artefacts with released versions of R)
@@ -283,13 +283,13 @@ renv_bootstrap_prefix <- function() {
     identical(R.version[["nickname"]], "Unsuffered Consequences")
 
   if (devel)
-    prefix <- paste(prefix, R.version[["svn rev"]], sep = "-r")
+    component <- paste(component, R.version[["svn rev"]], sep = "-r")
 
   # build list of path components
-  components <- c(prefix, R.version$platform)
+  components <- c(component, R.version$platform)
 
   # include prefix if provided by user
-  prefix <- renv_bootstrap_paths_prefix()
+  prefix <- prefix %||% renv_bootstrap_paths_prefix()
   if (!is.null(prefix) && nzchar(prefix))
     components <- c(prefix, components)
 
@@ -299,11 +299,6 @@ renv_bootstrap_prefix <- function() {
 }
 
 renv_bootstrap_paths_prefix <- function() {
-
-  # check request for empty prefix
-  empty <- Sys.getenv("RENV_PATHS_PREFIX_EMPTY", unset = NA)
-  if (empty %in% c("true", "True", "TRUE", "1"))
-    return(NULL)
 
   # check for user-supplied prefix
   prefix <- Sys.getenv("RENV_PATHS_PREFIX", unset = NA)

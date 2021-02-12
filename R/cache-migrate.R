@@ -5,110 +5,51 @@ renv_cache_migrate_init <- function() {
   if (!is.na(Sys.getenv("R_INSTALL_PKG", unset = NA)))
     return()
 
-  # if the user doesn't want a prefix, respect that
-  empty <- Sys.getenv("RENV_PATHS_PREFIX_EMPTY", unset = NA)
-  if (empty %in% c("true", "True", "TRUE", "1"))
-    return()
+  # don't do anything during a devtools::load_all
+  calls <- sys.calls()
+  for (call in calls)
+    if (identical(call[[1L]], quote(load_all)) ||
+        identical(call[[1L]], quote(devtools::load_all)))
+      return()
 
   # if RENV_PATHS_PREFIX is set, nothing to do
   prefix <- Sys.getenv("RENV_PATHS_PREFIX", unset = NA)
   if (!is.na(prefix))
     return()
 
-  renv_cache_migrate(check = TRUE)
-
-}
-
-renv_cache_migrate <- function(check = FALSE) {
-
   # compute 'old' cache path
   old <- local({
-
-    renv_scope_envvars(
-      RENV_PATHS_PREFIX = NULL,
-      RENV_PATHS_PREFIX_EMPTY = TRUE
-    )
-
+    renv_scope_options(renv.paths.prefix = "")
     renv_paths_cache()
-
   })
 
   # compute 'new' cache path
   new <- local({
-
-    renv_scope_envvars(
-      RENV_PATHS_PREFIX = NULL,
-      RENV_PATHS_PREFIX_EMPTY = NULL
-    )
-
+    renv_scope_options(renv.paths.prefix = NULL)
     renv_paths_cache()
-
   })
-
-  if (!check) {
-
-    if (!file.exists(old)) {
-      fmt <- "old cache location %s does not exist; cannot proceed"
-      stopf(fmt, renv_path_pretty(old))
-    }
-
-    if (file.exists(new)) {
-      fmt <- "new cache location %s already exists; cannot proceed"
-      stopf(fmt, renv_path_pretty(new))
-    }
-
-  }
 
   # migrate only if the old cache path exists but the new does not
   migrate <- file.exists(old) && !file.exists(new)
   if (!migrate)
     return()
 
-  paths <- c(
-    paste("Old:", renv_path_pretty(old)),
-    paste("New:", renv_path_pretty(new))
-  )
+  # trim off platform-specific part of path
+  old <- dirname(old)
+  new <- dirname(new)
 
-  if (check) {
-
-    renv_pretty_print(
-      values    = paths,
-      preamble  = "The default renv cache path has changed in this version of renv:",
-      postamble = c(
-        "Use `renv:::renv_cache_migrate()` to migrate the cache to the new location.",
-        "Alternatively, set the RENV_PATHS_PREFIX_EMPTY environment variable,",
-        "or manually migrate the cache folder from the old to the new path.",
-        "See `utils::news(package = \"renv\")` for more details."
-      ),
-      wrap = FALSE
-
-    )
-
-    return(FALSE)
-
+  # get symlink path (unix only)
+  target <- new
+  if (!renv_platform_windows()) {
+    parts <- strsplit(new, "[/\\]")[[1L]]
+    target <- paste(tail(parts, n = 2L), collapse = "/")
   }
 
-  renv_pretty_print(
-    values = paths,
-    preamble = "The renv cache will be copied from the old location to the new location:",
-    wrap = FALSE
-  )
-
-  if (interactive() && !proceed()) {
-    message("* Operation aborted.")
-    return(FALSE)
-  }
-
-  vprintf("Copying cache ... ")
-  renv_file_copy(old, new)
+  vprintf("Migrating cache ... ")
+  ensure_parent_directory(new)
+  renv_file_move(old, new)
+  renv_file_link(target, old)
   vwritef("Done!")
-
-  renv_pretty_print(
-    values    = paste("-", renv_path_pretty(old)),
-    preamble  = "Consider removing the old cache, located at:",
-    postamble = "The cache should only be removed after all renv projects on your system have been updated to 0.13.0 or newer.",
-    wrap = FALSE
-  )
 
   invisible(list(old = old, new = new))
 

@@ -5,9 +5,7 @@
   by default, effectively selecting a default value for the `RENV_PATHS_PREFIX`
   environment variable when it is unset. This should help ensure that the same
   cache root directory can be more easily shared across different machines and
-  operating systems, especially on Linux. If you'd like to preserve the paths
-  as used with `renv (< 0.13.0)`, please set `RENV_PATHS_PREFIX_EMPTY = TRUE`
-  (e.g. in your R installation's `Renviron.site`, or a user-local `~/.Renviron`)
+  operating systems, especially on Linux.
 
 * `renv` gains a new configuration option, `install.shortcuts`. When enabled,
   if `renv` discovers that a package to be installed is already available in

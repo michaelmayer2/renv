@@ -6,7 +6,7 @@
 renv_file_preface <- function(source, target, overwrite) {
 
   callback <- function() {}
-  if (!renv_file_exists(source))
+  if (!is.null(source) && !renv_file_exists(source))
     stopf("source file '%s' does not exist", source)
 
   if (overwrite)
@@ -232,7 +232,9 @@ renv_file_link <- function(source, target, overwrite = FALSE) {
   if (renv_file_same(source, target))
     return(TRUE)
 
-  callback <- renv_file_preface(source, target, overwrite)
+  # NOTE: 'source' here can be a relative path, and need
+  # not necessarily exist (although normally it should)
+  callback <- renv_file_preface(NULL, target, overwrite)
   on.exit(callback(), add = TRUE)
 
   if (renv_platform_windows()) {
