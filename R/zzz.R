@@ -9,6 +9,7 @@
   renv_filebacked_init()
   renv_platform_init()
   renv_envvars_init()
+  renv_cache_migrate_init()
 
   addTaskCallback(renv_repos_init_callback)
   addTaskCallback(renv_snapshot_auto_callback)

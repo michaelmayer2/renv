@@ -312,7 +312,7 @@ renv_bootstrap_paths_prefix <- function() {
 
   # otherwise, compute a default prefix
   sysinfo <- as.list(Sys.info())
-  sysname <- info[["sysname"]]
+  sysname <- sysinfo[["sysname"]]
 
   if (sysname == "Windows")
     renv_bootstrap_paths_prefix_windows(sysinfo)
